@@ -47,10 +47,17 @@ export function calculateResult(answers: Answers): ScoreResult {
   return { raw, percentages, ranked, top, futureScore };
 }
 
+export interface PlayerInfo {
+  name: string;
+  college: string;
+  contact: string;
+}
+
 export interface LeaderboardEntry {
   id: string;
   name: string;
   college?: string;
+  contact?: string;
   score: number;
   profile: ProfileId;
   timestamp: number;
@@ -113,12 +120,13 @@ export function resetLeaderboard() {
 
 export function exportCsv(entries: LeaderboardEntry[]): string {
   const rows = [
-    ["Name", "College", "Future Score", "Top Profile", "Date", "Time"],
+    ["Name", "College", "Contact", "Future Score", "Top Profile", "Date", "Time"],
     ...entries.map((e) => {
       const d = e.timestamp ? new Date(e.timestamp) : null;
       return [
         e.name,
         e.college ?? "",
+        e.contact ?? "",
         String(e.score),
         e.profile,
         d ? d.toLocaleDateString() : "—",

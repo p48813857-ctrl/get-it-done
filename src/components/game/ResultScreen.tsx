@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { RotateCcw } from "lucide-react";
 import { profiles } from "@/data/profiles";
 import { roadmaps } from "@/data/roadmaps";
-import type { ScoreResult } from "@/lib/game";
+import type { PlayerInfo, ScoreResult } from "@/lib/game";
 import { ScoreChart } from "./ScoreChart";
 import { ChipSection } from "./StrengthsSection";
 import { CareerSection } from "./CareerSection";
@@ -14,6 +14,7 @@ import { InstitutionCTA } from "./InstitutionCTA";
 
 interface Props {
   result: ScoreResult;
+  player?: PlayerInfo | null;
   onRestart: () => void;
 }
 
@@ -32,7 +33,7 @@ function useCountUp(target: number) {
   return value;
 }
 
-export function ResultScreen({ result, onRestart }: Props) {
+export function ResultScreen({ result, player, onRestart }: Props) {
   const top = profiles[result.top];
   const topPercent = result.percentages[result.top];
   const animatedScore = useCountUp(result.futureScore);
@@ -84,7 +85,7 @@ export function ResultScreen({ result, onRestart }: Props) {
         <ChipSection title="You May Enjoy" items={top.enjoy} />
         <Roadmap steps={roadmaps[result.top]} />
         <CareerSection careers={top.careers} />
-        <Leaderboard score={result.futureScore} profile={result.top} />
+        <Leaderboard score={result.futureScore} profile={result.top} player={player} />
         <ShareResult score={result.futureScore} profile={top} match={topPercent} />
         <InstitutionCTA />
 
