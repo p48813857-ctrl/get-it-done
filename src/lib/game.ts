@@ -47,10 +47,17 @@ export function calculateResult(answers: Answers): ScoreResult {
   return { raw, percentages, ranked, top, futureScore };
 }
 
+export interface PlayerInfo {
+  name: string;
+  college: string;
+  contact: string;
+}
+
 export interface LeaderboardEntry {
   id: string;
   name: string;
   college?: string;
+  contact?: string;
   score: number;
   profile: ProfileId;
   timestamp: number;

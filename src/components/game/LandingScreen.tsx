@@ -166,7 +166,7 @@ export function LandingScreen({ onStart }: Props) {
         transition={{ delay: 0.6, duration: 0.5 }}
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.97 }}
-        onClick={onStart}
+        onClick={() => setStep("details")}
         className="glow-primary mt-12 inline-flex items-center gap-3 rounded-full bg-primary px-10 py-5 font-display text-lg font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 sm:text-xl"
       >
         Start Your Future
