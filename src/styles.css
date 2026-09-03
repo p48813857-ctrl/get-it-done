@@ -177,3 +177,88 @@
   }
 
 }
+
+/* ===== Future Score game theme (scoped to /future-score) ===== */
+@theme inline {
+  --color-surface: var(--surface);
+  --font-display: "Orbitron", "Space Grotesk", system-ui, sans-serif;
+}
+
+.fs-scope {
+  --radius: 0.875rem;
+  --background: oklch(0.13 0.012 265);
+  --foreground: oklch(0.985 0 0);
+  --surface: oklch(0.19 0.018 265);
+  --card: oklch(0.18 0.016 265);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.17 0.016 265);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.62 0.245 25);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.7 0.19 245);
+  --secondary-foreground: oklch(0.13 0.012 265);
+  --muted: oklch(0.24 0.018 265);
+  --muted-foreground: oklch(0.72 0.02 265);
+  --accent: oklch(0.7 0.19 245);
+  --accent-foreground: oklch(0.13 0.012 265);
+  --destructive: oklch(0.62 0.245 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.7 0.19 245);
+  --chart-1: oklch(0.7 0.19 245);
+  --chart-2: oklch(0.62 0.245 25);
+  --chart-3: oklch(0.78 0.16 190);
+  --chart-4: oklch(0.8 0.16 85);
+  --chart-5: oklch(0.7 0.18 320);
+
+  --glow-primary: 0 0 0 1px oklch(0.62 0.245 25 / 35%), 0 0 32px oklch(0.62 0.245 25 / 35%);
+  --glow-secondary: 0 0 0 1px oklch(0.7 0.19 245 / 35%), 0 0 32px oklch(0.7 0.19 245 / 35%);
+  --gradient-hero: linear-gradient(135deg, oklch(0.62 0.245 25), oklch(0.7 0.19 245));
+  --gradient-surface: linear-gradient(145deg, oklch(1 0 0 / 8%), oklch(1 0 0 / 2%));
+
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Space Grotesk", system-ui, sans-serif;
+}
+
+@utility glass {
+  background-image: var(--gradient-surface);
+  background-color: oklch(0.18 0.016 265 / 65%);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border);
+}
+@utility glow-primary {
+  box-shadow: var(--glow-primary);
+}
+@utility glow-secondary {
+  box-shadow: var(--glow-secondary);
+}
+@utility text-gradient {
+  background-image: var(--gradient-hero);
+  background-clip: text;
+  color: transparent;
+}
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 5%) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@keyframes grid-pan {
+  from { background-position: 0 0; }
+  to { background-position: 56px 56px; }
+}
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(-120vh); opacity: 0; }
+}
+@keyframes fs-pulse-glow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.75; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
