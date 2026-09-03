@@ -8,7 +8,7 @@ import { GameScreen } from "@/components/game/GameScreen";
 import { CalculatingScreen } from "@/components/game/CalculatingScreen";
 import { ResultScreen } from "@/components/game/ResultScreen";
 import { useSound } from "@/hooks/useSound";
-import { calculateResult, type Answers, type ScoreResult } from "@/lib/game";
+import { calculateResult, type Answers, type PlayerInfo, type ScoreResult } from "@/lib/game";
 
 export const Route = createFileRoute("/future-score/")({
   head: () => ({
@@ -37,6 +37,7 @@ const IDLE_MS = 60_000;
 function FutureScoreGame() {
   const [phase, setPhase] = useState<Phase>("landing");
   const [answers, setAnswers] = useState<Answers>({});
+  const [player, setPlayer] = useState<PlayerInfo | null>(null);
   const [result, setResult] = useState<ScoreResult | null>(null);
   const [stallMode, setStallMode] = useState(false);
   const [idleWarning, setIdleWarning] = useState(false);
@@ -45,6 +46,7 @@ function FutureScoreGame() {
 
   const reset = useCallback(() => {
     setAnswers({});
+    setPlayer(null);
     setResult(null);
     setIdleWarning(false);
     setPhase("landing");
