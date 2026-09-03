@@ -1,12 +1,24 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   intensity?: "low" | "high";
 }
 
+type Particle = {
+  id: number;
+  left: number;
+  delay: number;
+  duration: number;
+  size: number;
+  blue: boolean;
+};
+
 export function FuturisticBackground({ intensity = "high" }: Props) {
-  const particles = useMemo(
-    () =>
+  // Generated after mount only: Math.random() during SSR causes hydration mismatch.
+  const [particles, setParticles] = useState<Particle[]>([]);
+
+  useEffect(() => {
+    setParticles(
       Array.from({ length: intensity === "high" ? 28 : 14 }, (_, i) => ({
         id: i,
         left: Math.random() * 100,
@@ -15,8 +27,8 @@ export function FuturisticBackground({ intensity = "high" }: Props) {
         size: 2 + Math.random() * 4,
         blue: Math.random() > 0.5,
       })),
-    [intensity],
-  );
+    );
+  }, [intensity]);
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
