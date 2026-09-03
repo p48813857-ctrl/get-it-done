@@ -1,23 +1,29 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Trophy } from "lucide-react";
-import { addLeaderboardEntry, getLeaderboard, type LeaderboardEntry } from "@/lib/game";
+import {
+  addLeaderboardEntry,
+  getLeaderboard,
+  type LeaderboardEntry,
+  type PlayerInfo,
+} from "@/lib/game";
 import type { ProfileId } from "@/data/questions";
 
 interface Props {
   score: number;
   profile: ProfileId;
+  player?: PlayerInfo | null;
   onClaimed?: (name: string, college: string) => void;
 }
 
 const MEDALS = ["🔥", "⚡", "🚀", "🤖", "📊"];
 
-export function Leaderboard({ score, profile, onClaimed }: Props) {
+export function Leaderboard({ score, profile, player, onClaimed }: Props) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>(() =>
     [...getLeaderboard()].sort((a, b) => b.score - a.score).slice(0, 10),
   );
-  const [name, setName] = useState("");
-  const [college, setCollege] = useState("");
+  const [name, setName] = useState(player?.name ?? "");
+  const [college, setCollege] = useState(player?.college ?? "");
   const [rank, setRank] = useState<number | null>(null);
   const [error, setError] = useState("");
 
@@ -32,6 +38,7 @@ export function Leaderboard({ score, profile, onClaimed }: Props) {
     const result = addLeaderboardEntry({
       name: trimmed,
       college: college.trim(),
+      contact: player?.contact,
       score,
       profile,
     });
