@@ -26,6 +26,8 @@ import { Route as AiCyberSecurityRouteImport } from './routes/ai.cyber-security'
 import { Route as AiDataSecurityRouteImport } from './routes/ai.data-security'
 import { Route as AiGenAiRouteImport } from './routes/ai.gen-ai'
 import { Route as AiProductManagementRouteImport } from './routes/ai.product-management'
+import { Route as FutureScoreIndexRouteImport } from './routes/future-score.index'
+import { Route as FutureScoreAdminRouteImport } from './routes/future-score.admin'
 import { Route as ManagementIndexRouteImport } from './routes/management.index'
 import { Route as ManagementBusinessEntrepreneurshipRouteImport } from './routes/management.business-entrepreneurship'
 import { Route as ManagementFinanceAccountingRouteImport } from './routes/management.finance-accounting'
@@ -126,6 +128,16 @@ const AiProductManagementRoute = AiProductManagementRouteImport.update({
   path: '/product-management',
   getParentRoute: () => AiRoute,
 } as any)
+const FutureScoreIndexRoute = FutureScoreIndexRouteImport.update({
+  id: '/future-score/',
+  path: '/future-score/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FutureScoreAdminRoute = FutureScoreAdminRouteImport.update({
+  id: '/future-score/admin',
+  path: '/future-score/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ManagementIndexRoute = ManagementIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -223,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/ai/data-security': typeof AiDataSecurityRoute
   '/ai/gen-ai': typeof AiGenAiRoute
   '/ai/product-management': typeof AiProductManagementRoute
+  '/future-score/admin': typeof FutureScoreAdminRoute
   '/management/business-entrepreneurship': typeof ManagementBusinessEntrepreneurshipRoute
   '/management/finance-accounting': typeof ManagementFinanceAccountingRoute
   '/management/marketing-growth': typeof ManagementMarketingGrowthRoute
@@ -236,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/multimedia/pm-smm': typeof MultimediaPmSmmRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/ai/': typeof AiIndexRoute
+  '/future-score/': typeof FutureScoreIndexRoute
   '/management/': typeof ManagementIndexRoute
   '/multimedia/': typeof MultimediaIndexRoute
 }
@@ -253,6 +267,7 @@ export interface FileRoutesByTo {
   '/ai/data-security': typeof AiDataSecurityRoute
   '/ai/gen-ai': typeof AiGenAiRoute
   '/ai/product-management': typeof AiProductManagementRoute
+  '/future-score/admin': typeof FutureScoreAdminRoute
   '/management/business-entrepreneurship': typeof ManagementBusinessEntrepreneurshipRoute
   '/management/finance-accounting': typeof ManagementFinanceAccountingRoute
   '/management/marketing-growth': typeof ManagementMarketingGrowthRoute
@@ -266,6 +281,7 @@ export interface FileRoutesByTo {
   '/multimedia/pm-smm': typeof MultimediaPmSmmRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/ai': typeof AiIndexRoute
+  '/future-score': typeof FutureScoreIndexRoute
   '/management': typeof ManagementIndexRoute
   '/multimedia': typeof MultimediaIndexRoute
 }
@@ -287,6 +303,7 @@ export interface FileRoutesById {
   '/ai/data-security': typeof AiDataSecurityRoute
   '/ai/gen-ai': typeof AiGenAiRoute
   '/ai/product-management': typeof AiProductManagementRoute
+  '/future-score/admin': typeof FutureScoreAdminRoute
   '/management/business-entrepreneurship': typeof ManagementBusinessEntrepreneurshipRoute
   '/management/finance-accounting': typeof ManagementFinanceAccountingRoute
   '/management/marketing-growth': typeof ManagementMarketingGrowthRoute
@@ -300,6 +317,7 @@ export interface FileRoutesById {
   '/multimedia/pm-smm': typeof MultimediaPmSmmRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/ai/': typeof AiIndexRoute
+  '/future-score/': typeof FutureScoreIndexRoute
   '/management/': typeof ManagementIndexRoute
   '/multimedia/': typeof MultimediaIndexRoute
 }
@@ -322,6 +340,7 @@ export interface FileRouteTypes {
     | '/ai/data-security'
     | '/ai/gen-ai'
     | '/ai/product-management'
+    | '/future-score/admin'
     | '/management/business-entrepreneurship'
     | '/management/finance-accounting'
     | '/management/marketing-growth'
@@ -335,6 +354,7 @@ export interface FileRouteTypes {
     | '/multimedia/pm-smm'
     | '/portfolio/$slug'
     | '/ai/'
+    | '/future-score/'
     | '/management/'
     | '/multimedia/'
   fileRoutesByTo: FileRoutesByTo
@@ -352,6 +372,7 @@ export interface FileRouteTypes {
     | '/ai/data-security'
     | '/ai/gen-ai'
     | '/ai/product-management'
+    | '/future-score/admin'
     | '/management/business-entrepreneurship'
     | '/management/finance-accounting'
     | '/management/marketing-growth'
@@ -365,6 +386,7 @@ export interface FileRouteTypes {
     | '/multimedia/pm-smm'
     | '/portfolio/$slug'
     | '/ai'
+    | '/future-score'
     | '/management'
     | '/multimedia'
   id:
@@ -385,6 +407,7 @@ export interface FileRouteTypes {
     | '/ai/data-security'
     | '/ai/gen-ai'
     | '/ai/product-management'
+    | '/future-score/admin'
     | '/management/business-entrepreneurship'
     | '/management/finance-accounting'
     | '/management/marketing-growth'
@@ -398,6 +421,7 @@ export interface FileRouteTypes {
     | '/multimedia/pm-smm'
     | '/portfolio/$slug'
     | '/ai/'
+    | '/future-score/'
     | '/management/'
     | '/multimedia/'
   fileRoutesById: FileRoutesById
@@ -412,7 +436,9 @@ export interface RootRouteChildren {
   OutcomesRoute: typeof OutcomesRoute
   UgProgramsRoute: typeof UgProgramsRoute
   WorkshopRoute: typeof WorkshopRoute
+  FutureScoreAdminRoute: typeof FutureScoreAdminRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
+  FutureScoreIndexRoute: typeof FutureScoreIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -535,6 +561,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/ai/product-management'
       preLoaderRoute: typeof AiProductManagementRouteImport
       parentRoute: typeof AiRoute
+    }
+    '/future-score/': {
+      id: '/future-score/'
+      path: '/future-score'
+      fullPath: '/future-score/'
+      preLoaderRoute: typeof FutureScoreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/future-score/admin': {
+      id: '/future-score/admin'
+      path: '/future-score/admin'
+      fullPath: '/future-score/admin'
+      preLoaderRoute: typeof FutureScoreAdminRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/management/': {
       id: '/management/'
@@ -719,7 +759,9 @@ const rootRouteChildren: RootRouteChildren = {
   OutcomesRoute: OutcomesRoute,
   UgProgramsRoute: UgProgramsRoute,
   WorkshopRoute: WorkshopRoute,
+  FutureScoreAdminRoute: FutureScoreAdminRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
+  FutureScoreIndexRoute: FutureScoreIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

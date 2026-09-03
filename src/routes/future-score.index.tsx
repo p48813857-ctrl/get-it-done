@@ -10,7 +10,7 @@ import { ResultScreen } from "@/components/game/ResultScreen";
 import { useSound } from "@/hooks/useSound";
 import { calculateResult, type Answers, type ScoreResult } from "@/lib/game";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/future-score/")({
   head: () => ({
     meta: [
       { title: "What's Your Future Score? — Career Discovery Game" },

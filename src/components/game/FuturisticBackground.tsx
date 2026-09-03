@@ -27,11 +27,11 @@ export function FuturisticBackground({ intensity = "high" }: Props) {
       />
       <div
         className="absolute -left-40 top-[-10rem] h-[36rem] w-[36rem] rounded-full bg-primary/25 blur-[140px]"
-        style={{ animation: "pulse-glow 7s ease-in-out infinite" }}
+        style={{ animation: "fs-pulse-glow 7s ease-in-out infinite" }}
       />
       <div
         className="absolute -right-40 bottom-[-12rem] h-[40rem] w-[40rem] rounded-full bg-secondary/25 blur-[150px]"
-        style={{ animation: "pulse-glow 9s ease-in-out infinite" }}
+        style={{ animation: "fs-pulse-glow 9s ease-in-out infinite" }}
       />
       {particles.map((p) => (
         <span

@@ -12,7 +12,7 @@ import {
 } from "@/lib/game";
 import { FuturisticBackground } from "@/components/game/FuturisticBackground";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/future-score/admin")({
   head: () => ({
     meta: [
       { title: "Admin Dashboard — What's Your Future Score?" },
