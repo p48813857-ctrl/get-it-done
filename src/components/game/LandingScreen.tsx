@@ -1,11 +1,111 @@
+import { useState } from "react";
 import { motion } from "motion/react";
-import { Rocket, Sparkles } from "lucide-react";
+import { Rocket, Sparkles, User } from "lucide-react";
+import type { PlayerInfo } from "@/lib/game";
 
 interface Props {
-  onStart: () => void;
+  onStart: (player: PlayerInfo) => void;
 }
 
+const inputClass =
+  "w-full rounded-xl border border-input bg-background/60 px-4 py-3 text-left outline-none placeholder:text-muted-foreground focus:border-secondary";
+
 export function LandingScreen({ onStart }: Props) {
+  const [step, setStep] = useState<"intro" | "details">("intro");
+  const [name, setName] = useState("");
+  const [college, setCollege] = useState("");
+  const [contact, setContact] = useState("");
+  const [error, setError] = useState("");
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setError("Please enter your name.");
+      return;
+    }
+    if (contact.trim() && !/^[0-9+\-\s]{7,15}$/.test(contact.trim())) {
+      setError("Please enter a valid contact number.");
+      return;
+    }
+    setError("");
+    onStart({ name: trimmed, college: college.trim(), contact: contact.trim() });
+  };
+
+  if (step === "details") {
+    return (
+      <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-5 py-16 text-center">
+        <motion.form
+          onSubmit={submit}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="glass glow-primary w-full max-w-md rounded-3xl p-8 sm:p-10"
+        >
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/15">
+            <User className="h-6 w-6 text-primary" />
+          </div>
+          <h2 className="mt-5 font-display text-2xl font-black uppercase tracking-widest">
+            Before We Begin
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Tell us who&apos;s playing — your name goes on the leaderboard.
+          </p>
+
+          <div className="mt-7 grid gap-3">
+            <label className="sr-only" htmlFor="player-name">
+              Your name
+            </label>
+            <input
+              id="player-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name *"
+              maxLength={40}
+              autoFocus
+              className={inputClass}
+            />
+            <label className="sr-only" htmlFor="player-college">
+              College name
+            </label>
+            <input
+              id="player-college"
+              value={college}
+              onChange={(e) => setCollege(e.target.value)}
+              placeholder="College name"
+              maxLength={60}
+              className={inputClass}
+            />
+            <label className="sr-only" htmlFor="player-contact">
+              Contact number
+            </label>
+            <input
+              id="player-contact"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+              placeholder="Contact number"
+              inputMode="tel"
+              maxLength={15}
+              className={inputClass}
+            />
+          </div>
+
+          {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
+
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="glow-primary mt-7 inline-flex w-full items-center justify-center gap-3 rounded-full bg-primary px-8 py-4 font-display text-lg font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Start Your Future
+            <Rocket className="h-5 w-5" />
+          </motion.button>
+        </motion.form>
+      </section>
+    );
+  }
+
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-center px-5 py-16 text-center">
       <motion.div
