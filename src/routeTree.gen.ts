@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AiRouteImport } from './routes/ai'
+import { Route as FutureScoreRouteImport } from './routes/future-score'
 import { Route as IncubationRouteImport } from './routes/incubation'
 import { Route as ManagementRouteImport } from './routes/management'
 import { Route as MultimediaRouteImport } from './routes/multimedia'
@@ -51,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
 const AiRoute = AiRouteImport.update({
   id: '/ai',
   path: '/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FutureScoreRoute = FutureScoreRouteImport.update({
+  id: '/future-score',
+  path: '/future-score',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IncubationRoute = IncubationRouteImport.update({
@@ -129,14 +135,14 @@ const AiProductManagementRoute = AiProductManagementRouteImport.update({
   getParentRoute: () => AiRoute,
 } as any)
 const FutureScoreIndexRoute = FutureScoreIndexRouteImport.update({
-  id: '/future-score/',
-  path: '/future-score/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => FutureScoreRoute,
 } as any)
 const FutureScoreAdminRoute = FutureScoreAdminRouteImport.update({
-  id: '/future-score/admin',
-  path: '/future-score/admin',
-  getParentRoute: () => rootRouteImport,
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => FutureScoreRoute,
 } as any)
 const ManagementIndexRoute = ManagementIndexRouteImport.update({
   id: '/',
@@ -221,6 +227,7 @@ const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai': typeof AiRouteWithChildren
+  '/future-score': typeof FutureScoreRouteWithChildren
   '/incubation': typeof IncubationRoute
   '/management': typeof ManagementRouteWithChildren
   '/multimedia': typeof MultimediaRouteWithChildren
@@ -289,6 +296,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai': typeof AiRouteWithChildren
+  '/future-score': typeof FutureScoreRouteWithChildren
   '/incubation': typeof IncubationRoute
   '/management': typeof ManagementRouteWithChildren
   '/multimedia': typeof MultimediaRouteWithChildren
@@ -326,6 +334,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ai'
+    | '/future-score'
     | '/incubation'
     | '/management'
     | '/multimedia'
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ai'
+    | '/future-score'
     | '/incubation'
     | '/management'
     | '/multimedia'
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiRoute: typeof AiRouteWithChildren
+  FutureScoreRoute: typeof FutureScoreRouteWithChildren
   IncubationRoute: typeof IncubationRoute
   ManagementRoute: typeof ManagementRouteWithChildren
   MultimediaRoute: typeof MultimediaRouteWithChildren
@@ -436,9 +447,7 @@ export interface RootRouteChildren {
   OutcomesRoute: typeof OutcomesRoute
   UgProgramsRoute: typeof UgProgramsRoute
   WorkshopRoute: typeof WorkshopRoute
-  FutureScoreAdminRoute: typeof FutureScoreAdminRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
-  FutureScoreIndexRoute: typeof FutureScoreIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -455,6 +464,13 @@ declare module '@tanstack/react-router' {
       path: '/ai'
       fullPath: '/ai'
       preLoaderRoute: typeof AiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/future-score': {
+      id: '/future-score'
+      path: '/future-score'
+      fullPath: '/future-score'
+      preLoaderRoute: typeof FutureScoreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/incubation': {
@@ -564,17 +580,17 @@ declare module '@tanstack/react-router' {
     }
     '/future-score/': {
       id: '/future-score/'
-      path: '/future-score'
+      path: '/'
       fullPath: '/future-score/'
       preLoaderRoute: typeof FutureScoreIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof FutureScoreRoute
     }
     '/future-score/admin': {
       id: '/future-score/admin'
-      path: '/future-score/admin'
+      path: '/admin'
       fullPath: '/future-score/admin'
       preLoaderRoute: typeof FutureScoreAdminRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof FutureScoreRoute
     }
     '/management/': {
       id: '/management/'
@@ -701,6 +717,20 @@ const AiRouteChildren: AiRouteChildren = {
 
 const AiRouteWithChildren = AiRoute._addFileChildren(AiRouteChildren)
 
+interface FutureScoreRouteChildren {
+  FutureScoreAdminRoute: typeof FutureScoreAdminRoute
+  FutureScoreIndexRoute: typeof FutureScoreIndexRoute
+}
+
+const FutureScoreRouteChildren: FutureScoreRouteChildren = {
+  FutureScoreAdminRoute: FutureScoreAdminRoute,
+  FutureScoreIndexRoute: FutureScoreIndexRoute,
+}
+
+const FutureScoreRouteWithChildren = FutureScoreRoute._addFileChildren(
+  FutureScoreRouteChildren,
+)
+
 interface ManagementRouteChildren {
   ManagementBusinessEntrepreneurshipRoute: typeof ManagementBusinessEntrepreneurshipRoute
   ManagementFinanceAccountingRoute: typeof ManagementFinanceAccountingRoute
@@ -752,6 +782,7 @@ const MultimediaRouteWithChildren = MultimediaRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiRoute: AiRouteWithChildren,
+  FutureScoreRoute: FutureScoreRouteWithChildren,
   IncubationRoute: IncubationRoute,
   ManagementRoute: ManagementRouteWithChildren,
   MultimediaRoute: MultimediaRouteWithChildren,
@@ -759,9 +790,7 @@ const rootRouteChildren: RootRouteChildren = {
   OutcomesRoute: OutcomesRoute,
   UgProgramsRoute: UgProgramsRoute,
   WorkshopRoute: WorkshopRoute,
-  FutureScoreAdminRoute: FutureScoreAdminRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
-  FutureScoreIndexRoute: FutureScoreIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
