@@ -120,8 +120,9 @@ function FutureScoreGame() {
         {phase === "landing" && (
           <motion.div key="landing" exit={{ opacity: 0, scale: 1.03 }} transition={{ duration: 0.3 }}>
             <LandingScreen
-              onStart={() => {
+              onStart={(p) => {
                 play("click");
+                setPlayer(p);
                 setAnswers({});
                 setResult(null);
                 setPhase("game");
@@ -160,6 +161,7 @@ function FutureScoreGame() {
           <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <ResultScreen
               result={result}
+              player={player}
               onRestart={() => {
                 play("achievement");
                 reset();
