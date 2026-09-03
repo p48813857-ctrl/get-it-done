@@ -110,7 +110,7 @@ function FutureScoreGame() {
           className="glass flex items-center gap-2 rounded-full px-4 text-xs font-display uppercase tracking-widest transition-colors hover:border-primary/60"
         >
           {stallMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-          <span className="hidden sm:inline">🎪 Stall Mode</span>
+          <span className="hidden sm:inline">{"\n"}</span>
         </button>
       </div>
 
