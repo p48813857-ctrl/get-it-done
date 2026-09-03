@@ -120,12 +120,13 @@ export function resetLeaderboard() {
 
 export function exportCsv(entries: LeaderboardEntry[]): string {
   const rows = [
-    ["Name", "College", "Future Score", "Top Profile", "Date", "Time"],
+    ["Name", "College", "Contact", "Future Score", "Top Profile", "Date", "Time"],
     ...entries.map((e) => {
       const d = e.timestamp ? new Date(e.timestamp) : null;
       return [
         e.name,
         e.college ?? "",
+        e.contact ?? "",
         String(e.score),
         e.profile,
         d ? d.toLocaleDateString() : "—",
