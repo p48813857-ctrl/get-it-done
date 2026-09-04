@@ -158,10 +158,12 @@ export function Leaderboard({ score, profile, player, onClaimed }: Props) {
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button
             type="submit"
-            className="glow-primary rounded-xl bg-primary px-6 py-3 font-display font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+            disabled={saving}
+            className="glow-primary rounded-xl bg-primary px-6 py-3 font-display font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
           >
-            Claim My Score 🚀
+            {saving ? "Saving…" : "Claim My Score 🚀"}
           </button>
+
         </form>
       ) : (
         <motion.p
