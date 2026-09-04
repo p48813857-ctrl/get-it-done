@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Trophy } from "lucide-react";
 import {
@@ -7,6 +7,7 @@ import {
   type LeaderboardEntry,
   type PlayerInfo,
 } from "@/lib/game";
+import { fetchLeaderboard, phpBackendEnabled, saveFutureScore } from "@/lib/php-api";
 import type { ProfileId } from "@/data/questions";
 
 interface Props {
@@ -26,8 +27,31 @@ export function Leaderboard({ score, profile, player, onClaimed }: Props) {
   const [college, setCollege] = useState(player?.college ?? "");
   const [rank, setRank] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const claim = (e: React.FormEvent) => {
+  // Pull the live leaderboard from the PHP backend when it is configured.
+  useEffect(() => {
+    if (!phpBackendEnabled) return;
+    let cancelled = false;
+    void fetchLeaderboard(10).then((res) => {
+      if (cancelled || !res.ok || !res.data) return;
+      setEntries(
+        res.data.leaderboard.map((r) => ({
+          id: String(r.id),
+          name: r.name,
+          college: r.college ?? "",
+          score: r.score,
+          profile: r.profile as ProfileId,
+          timestamp: new Date(r.created_at).getTime(),
+        })),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const claim = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) {
@@ -35,6 +59,35 @@ export function Leaderboard({ score, profile, player, onClaimed }: Props) {
       return;
     }
     setError("");
+    setSaving(true);
+
+    if (phpBackendEnabled) {
+      const res = await saveFutureScore({
+        name: trimmed,
+        college: college.trim(),
+        contact: player?.contact,
+        score,
+        profile,
+      });
+      setSaving(false);
+      if (res.ok && res.data) {
+        setEntries(
+          res.data.leaderboard.map((r) => ({
+            id: String(r.id),
+            name: r.name,
+            college: r.college ?? "",
+            score: r.score,
+            profile: r.profile as ProfileId,
+            timestamp: new Date(r.created_at).getTime(),
+          })),
+        );
+        setRank(res.data.rank);
+        onClaimed?.(trimmed, college.trim());
+        return;
+      }
+      setError(res.error ?? "Could not save your score. Saved on this device instead.");
+    }
+
     const result = addLeaderboardEntry({
       name: trimmed,
       college: college.trim(),
@@ -42,10 +95,12 @@ export function Leaderboard({ score, profile, player, onClaimed }: Props) {
       score,
       profile,
     });
+    setSaving(false);
     setEntries([...result.entries].sort((a, b) => b.score - a.score).slice(0, 10));
     setRank(result.rank);
     onClaimed?.(trimmed, college.trim());
   };
+
 
   return (
     <div className="glass rounded-3xl p-6 sm:p-8">
@@ -103,10 +158,12 @@ export function Leaderboard({ score, profile, player, onClaimed }: Props) {
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button
             type="submit"
-            className="glow-primary rounded-xl bg-primary px-6 py-3 font-display font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
+            disabled={saving}
+            className="glow-primary rounded-xl bg-primary px-6 py-3 font-display font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
           >
-            Claim My Score 🚀
+            {saving ? "Saving…" : "Claim My Score 🚀"}
           </button>
+
         </form>
       ) : (
         <motion.p
