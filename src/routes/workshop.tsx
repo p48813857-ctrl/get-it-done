@@ -771,7 +771,10 @@ const whyJoin = [
 
 function ApplySection() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", role: "", experience: "", goal: "" });
+
 
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -826,10 +829,28 @@ function ApplySection() {
             </div>
           ) : (
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                setSubmitted(true);
+                setSending(true);
+                setSendError("");
+                const res = await submitApplication({
+                  form_type: "workshop",
+                  program: "1-Week Business Analyst Workshop",
+                  name: form.name,
+                  email: form.email,
+                  phone: form.phone,
+                  role: form.role,
+                  experience: form.experience,
+                  goal: form.goal,
+                });
+                setSending(false);
+                if (res.ok || res.offline) {
+                  setSubmitted(true);
+                } else {
+                  setSendError(res.error ?? "Could not submit. Please try again.");
+                }
               }}
+
               className="rounded-3xl border border-border bg-surface p-6 sm:p-8"
             >
               <div className="grid gap-5 sm:grid-cols-2">
