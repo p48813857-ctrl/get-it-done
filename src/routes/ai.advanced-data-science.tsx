@@ -448,13 +448,34 @@ function InlineApplicationForm() {
     goal: "", batch: "next", agree: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!state.agree) return;
-    // Client-only demo submission
-    setSubmitted(true);
+    setSending(true);
+    setSendError("");
+    const res = await submitApplication({
+      form_type: "advanced-data-science",
+      program: "Advanced Data Science & AI Certification",
+      name: state.name,
+      email: state.email,
+      phone: state.phone,
+      city: state.city,
+      education: state.background,
+      experience: state.experience,
+      goal: state.goal,
+      extra: { batch: state.batch },
+    });
+    setSending(false);
+    if (res.ok || res.offline) {
+      setSubmitted(true);
+    } else {
+      setSendError(res.error ?? "Could not submit. Please try again.");
+    }
   };
+
 
   if (submitted) {
     return (
