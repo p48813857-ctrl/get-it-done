@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { submitApplication } from "@/lib/php-api";
 import skillAiLogo from "@/assets/skill-ai-logo.png";
+
 import {
   ArrowRight,
   Award,
@@ -916,13 +918,17 @@ function ApplySection() {
                   </Field>
                 </div>
               </div>
+              {sendError && <p className="text-sm text-destructive">{sendError}</p>}
               <button
                 type="submit"
-                className="group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-sm font-bold tracking-wider text-lime-foreground transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_oklch(0.72_0.2_50/0.35)]"
+                disabled={sending}
+                className="group mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-sm font-bold tracking-wider text-lime-foreground transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_oklch(0.72_0.2_50/0.35)] disabled:opacity-60"
               >
-                SUBMIT APPLICATION <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                {sending ? "SENDING…" : "SUBMIT APPLICATION"}{" "}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </button>
             </form>
+
           )}
         </div>
       </div>

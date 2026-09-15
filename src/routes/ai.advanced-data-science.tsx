@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { submitApplication } from "@/lib/php-api";
 import skillAiLogo from "@/assets/skill-ai-logo.png";
 import heroImg from "@/assets/card-ads.jpg";
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   ArrowRight, Clock, Trophy, Rocket, Sparkles, CheckCircle2,
   LineChart, BarChart3, Cog, Gauge, Timer, Layers, Database, Brain,
@@ -446,13 +448,34 @@ function InlineApplicationForm() {
     goal: "", batch: "next", agree: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!state.agree) return;
-    // Client-only demo submission
-    setSubmitted(true);
+    setSending(true);
+    setSendError("");
+    const res = await submitApplication({
+      form_type: "advanced-data-science",
+      program: "Advanced Data Science & AI Certification",
+      name: state.name,
+      email: state.email,
+      phone: state.phone,
+      city: state.city,
+      education: state.background,
+      experience: state.experience,
+      goal: state.goal,
+      extra: { batch: state.batch },
+    });
+    setSending(false);
+    if (res.ok || res.offline) {
+      setSubmitted(true);
+    } else {
+      setSendError(res.error ?? "Could not submit. Please try again.");
+    }
   };
+
 
   if (submitted) {
     return (
@@ -523,10 +546,12 @@ function InlineApplicationForm() {
         <span>I agree to be contacted by the Skill Ai admissions team about this program.</span>
       </label>
 
-      <button type="submit" disabled={!state.agree}
-        className="mt-8 group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-8 py-4 text-base font-bold text-lime-foreground shadow-2xl shadow-lime/30 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all">
-        Submit Application <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+      {sendError && <p className="text-sm text-destructive">{sendError}</p>}
+      <button type="submit" disabled={!state.agree || sending}
+        className="mt-2 group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-8 py-4 text-base font-bold text-lime-foreground shadow-2xl shadow-lime/30 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all">
+        {sending ? "Sending…" : "Submit Application"} <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
       </button>
+
     </form>
   );
 }
