@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { submitApplication } from "@/lib/php-api";
 import skillAiLogo from "@/assets/skill-ai-logo.png";
 import heroImg from "@/assets/card-ads.jpg";
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   ArrowRight, Clock, Trophy, Rocket, Sparkles, CheckCircle2,
   LineChart, BarChart3, Cog, Gauge, Timer, Layers, Database, Brain,
