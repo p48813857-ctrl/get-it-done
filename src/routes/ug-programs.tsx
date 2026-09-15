@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { submitApplication } from "@/lib/php-api";
 import skillAiLogo from "@/assets/skill-ai-logo.png";
 import { useEffect, useState } from "react";
 import { ArrowRight, GraduationCap, Briefcase, Calculator, BookOpen, Sparkles, Clock, Users, Rocket, TrendingUp, Building2, Globe2 } from "lucide-react";
+
 
 export const Route = createFileRoute("/ug-programs")({
   head: () => ({
