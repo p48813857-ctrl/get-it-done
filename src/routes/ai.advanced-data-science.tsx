@@ -546,10 +546,12 @@ function InlineApplicationForm() {
         <span>I agree to be contacted by the Skill Ai admissions team about this program.</span>
       </label>
 
-      <button type="submit" disabled={!state.agree}
-        className="mt-8 group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-8 py-4 text-base font-bold text-lime-foreground shadow-2xl shadow-lime/30 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all">
-        Submit Application <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+      {sendError && <p className="text-sm text-destructive">{sendError}</p>}
+      <button type="submit" disabled={!state.agree || sending}
+        className="mt-2 group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-8 py-4 text-base font-bold text-lime-foreground shadow-2xl shadow-lime/30 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all">
+        {sending ? "Sending…" : "Submit Application"} <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
       </button>
+
     </form>
   );
 }
