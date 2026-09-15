@@ -392,7 +392,48 @@ function CourseModal({ course, onClose, onApply }: { course: typeof courses[numb
 
 export function ApplyModal({ program, onClose, variant = "default" }: { program: string; onClose: () => void; variant?: "default" | "multimedia" }) {
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const isMM = variant === "multimedia";
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    city: "",
+    interest: "",
+    level: "",
+    portfolio: "",
+    tools: "",
+    project: "",
+    why: "",
+  });
+  const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    setSendError("");
+    const res = await submitApplication({
+      form_type: isMM ? "multimedia-program" : "ug-pg-program",
+      program,
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      city: form.city,
+      goal: isMM ? form.project : form.why,
+      extra: isMM
+        ? { interest: form.interest, level: form.level, portfolio: form.portfolio, tools: form.tools }
+        : { why: form.why },
+    });
+    setSending(false);
+    if (res.ok || res.offline) {
+      setDone(true);
+    } else {
+      setSendError(res.error ?? "Could not submit. Please try again.");
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" onClick={onClose}>
       <div className="w-full max-w-md rounded-3xl border border-border/60 bg-surface p-7 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -407,14 +448,14 @@ export function ApplyModal({ program, onClose, variant = "default" }: { program:
             <p className="text-sm text-muted-foreground">Our team will reach out within 24 hrs.</p>
           </div>
         ) : (
-          <form onSubmit={(e) => { e.preventDefault(); setDone(true); }} className="mt-5 grid gap-3">
-            <input required placeholder="Full name" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
-            <input required type="email" placeholder="Email" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
-            <input required placeholder="Phone" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
-            <input placeholder="City" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+          <form onSubmit={onSubmit} className="mt-5 grid gap-3">
+            <input required value={form.name} onChange={update("name")} placeholder="Full name" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+            <input required value={form.email} onChange={update("email")} type="email" placeholder="Email" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+            <input required value={form.phone} onChange={update("phone")} placeholder="Phone" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+            <input value={form.city} onChange={update("city")} placeholder="City" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
             {isMM ? (
               <>
-                <select required className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime">
+                <select required value={form.interest} onChange={update("interest")} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime">
                   <option value="">Creative area of interest</option>
                   <option>Graphic Design & Branding</option>
                   <option>Video Editing & VFX</option>
@@ -422,24 +463,28 @@ export function ApplyModal({ program, onClose, variant = "default" }: { program:
                   <option>Film Direction & Cinematography</option>
                   <option>Performance & Social Media Marketing</option>
                 </select>
-                <select required className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime">
+                <select required value={form.level} onChange={update("level")} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime">
                   <option value="">Your current level</option>
                   <option>Absolute beginner</option>
                   <option>Hobbyist / self-taught</option>
                   <option>1–2 years experience</option>
                   <option>Working professional</option>
                 </select>
-                <input placeholder="Portfolio / Instagram / showreel link (optional)" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
-                <input placeholder="Tools you already use (e.g. Photoshop, Premiere)" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
-                <textarea required placeholder="Tell us about a project or story you'd love to create." rows={3} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+                <input value={form.portfolio} onChange={update("portfolio")} placeholder="Portfolio / Instagram / showreel link (optional)" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+                <input value={form.tools} onChange={update("tools")} placeholder="Tools you already use (e.g. Photoshop, Premiere)" className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+                <textarea required value={form.project} onChange={update("project")} placeholder="Tell us about a project or story you'd love to create." rows={3} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
               </>
             ) : (
-              <textarea placeholder="Why this program?" rows={3} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
+              <textarea value={form.why} onChange={update("why")} placeholder="Why this program?" rows={3} className="rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm outline-none focus:border-lime" />
             )}
-            <button className="rounded-full bg-lime py-3 font-bold text-lime-foreground hover:scale-[1.02] transition-transform">Submit application</button>
+            {sendError && <p className="text-sm text-destructive">{sendError}</p>}
+            <button disabled={sending} className="rounded-full bg-lime py-3 font-bold text-lime-foreground hover:scale-[1.02] transition-transform disabled:opacity-60">
+              {sending ? "Sending…" : "Submit application"}
+            </button>
           </form>
         )}
       </div>
     </div>
   );
 }
+
