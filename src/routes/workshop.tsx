@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { submitApplication } from "@/lib/php-api";
 import skillAiLogo from "@/assets/skill-ai-logo.png";
+
 import {
   ArrowRight,
   Award,
