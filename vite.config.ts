@@ -11,5 +11,8 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Pre-render every route to static HTML so the site also runs on plain
+    // static hosting (e.g. GoDaddy cPanel) with an Apache SPA fallback.
+    prerender: { enabled: true, crawlLinks: true },
   },
 });
